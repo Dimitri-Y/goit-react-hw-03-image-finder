@@ -13,15 +13,15 @@ class ImageGallery extends Component {
               largeImageURL: PropTypes.string.isRequired,
             })
           ).isRequired,
-        
+        onModal: PropTypes.func.isRequired
     };
     render(){
-        const {gallery}=this.props;
+        const {gallery,onModal}=this.props;
         return(
         <ul className={css["ImageGallery"]}>
             {
-            gallery.map(({id ,tags, webformatURL})=>(
-                <ImageGalleryItem about={tags} url={webformatURL} key={id}></ImageGalleryItem>
+            gallery.map(({id ,tags, webformatURL,largeImageURL})=>(
+                <ImageGalleryItem about={tags} url={webformatURL} key={id} onModalModal={() => onModal(largeImageURL, tags)}></ImageGalleryItem>
             )
                 )}
       </ul>);

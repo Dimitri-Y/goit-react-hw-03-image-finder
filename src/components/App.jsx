@@ -3,6 +3,8 @@ import Searcbar from './Searchbar/Searcbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import { ThreeDots} from 'react-loader-spinner'
 import httpRequest from './httpRequest';
+import Button from './Button/ButtonLoadMore';
+import Modal from './Modal/Modal';
 class App extends Component {
  
   state={
@@ -10,7 +12,11 @@ class App extends Component {
     gallery:[],
     isLoading: false,
     error:null,
-    page:"1"
+    page:"1",
+    totalHits:0,
+    isModal:false,
+    largeImage:"",
+    alt:"",
   }
   componentDidUpdate(prevProps, prevState) {
     if (
@@ -28,8 +34,9 @@ class App extends Component {
     try {
       this.setState({ isLoading: true });
       const response =await httpRequest.fetchArticlesWithQuery(searchName,page);
-      this.setState(prevState=>({ gallery: [...prevState.gallery,...response.data.hits] }));
-  } catch (error) {
+      this.setState(prevState=>({ gallery: [...prevState.gallery,...response.data.hits],page:prevState.page+1,totalHits:response.data.totalHits}));
+      console.log(response.data);
+    } catch (error) {
     this.setState({ error:error.message });
   } finally {
     this.setState({ isLoading: false });
@@ -38,13 +45,20 @@ class App extends Component {
 
   handlerOnSearch=search=>{
     if(search.trim()!=="" && search.trim()!==this.state.searchName)
-    this.setState({searchName:search,gallery:[]});
+    this.setState({searchName:search,gallery:[],page:1});
   }
   onLoadMore=()=>{
-
+      this.addImages(this.state.searchName,this.state.page);
+    
+  }
+  onModal=(largeImageURL,alt)=>{
+    this.setState({ largeImage:largeImageURL,alt:alt,isModal:true})
+  }
+  onCloseModal=()=>{
+    this.setState({ isModal:false,largeImage: '',alt: '',});
   }
   render(){
-    const {isLoading,gallery,error} =this.state;
+    const {isLoading,gallery,error,totalHits,isModal} =this.state;
     return (
     <div
     style={{
@@ -68,10 +82,11 @@ wrapperClassName=""
 visible={true}
  />
           </div>}
-        {gallery.length > 0 && <ImageGallery gallery={gallery}></ImageGallery>
-        }
+        {gallery.length > 0 && <ImageGallery gallery={gallery} onModal={this.onModal}></ImageGallery>}
+        {(gallery.length > 0 && gallery.length<totalHits )&&<Button onLoadMore={this.onLoadMore}></Button>}
+        {isModal&&<Modal onCloseModal={this.onCloseModal}></Modal>}
     </div>
-
+   
   );
 };
 }
