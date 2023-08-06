@@ -21,7 +21,7 @@ class ImageGallery extends Component {
         <ul className={css["ImageGallery"]}>
             {
             gallery.map(({id ,tags, webformatURL,largeImageURL})=>(
-                <ImageGalleryItem about={tags} url={webformatURL} key={id} onModalModal={() => onModal(largeImageURL, tags)}></ImageGalleryItem>
+                <ImageGalleryItem about={tags} url={webformatURL} key={id} onModal={() => onModal(largeImageURL, tags)}></ImageGalleryItem>
             )
                 )}
       </ul>);

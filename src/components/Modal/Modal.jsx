@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 class Modal extends Component {
   static propTypes = {
     onCloseModal: PropTypes.func.isRequired,
-    url: PropTypes.string.isRequired,
-    about: PropTypes.string.isRequired,  
+    largeImageURL: PropTypes.string.isRequired,
+    alt: PropTypes.string.isRequired,  
   }  
   handleKeyDown = event => {
         if (event.code === 'Escape') {
@@ -27,11 +27,11 @@ class Modal extends Component {
         window.removeEventListener('keydown', this.handleKeyDown);
       }
     render(){
-        const {url,about}=this.props;
+        const {largeImageURL,alt}=this.props;
         return(
             <div className={css["Overlay"]} onClick={this.handleOverlayClick}>
                 <div className={css["Modal"]}>
-                    <img src={url} alt={about} />
+                    <img src={largeImageURL} alt={alt} />
                 </div>    
             </div>);
     }
